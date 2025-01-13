@@ -111,26 +111,28 @@ function popup(event) {
         xhrFields: {
             responseType: 'blob'  // Ensure the response is a Blob (binary data)
         },
-        success: function(response, xhr) {
+        success: function(data, status, jqXHR) {
             try {
                 // Enable the download button
                 $('#download' + event.data.count).attr('disabled', false);
     
                 // Get the Content-Disposition header to extract the filename
-                const contentDisposition = xhr.getResponseHeader('Content-Disposition');
-                console.log(contentDisposition);
+                const contentDisposition = jqXHR.getResponseHeader('Content-Disposition');
+                console.log(jqXHR.getAllResponseHeaders());
     
                 const matches = contentDisposition ? contentDisposition.match(/filename="(.+)"/) : null;
                 const fileName = matches ? matches[1] : 'audio.mp3'; // Default to 'audio.mp3' if no filename is found
     
                 // Create a new Blob from the response (audio file)
-                const blob = response;  // Since we've set the responseType to 'blob', it's already a Blob
+                const blob = data;  // Since we've set the responseType to 'blob', it's already a Blob
     
                 // Create a link element
                 const downloadLink = document.createElement('a');
                 downloadLink.href = URL.createObjectURL(blob);
                 downloadLink.download = fileName;  // Set the download file name
                 downloadLink.click();  // Trigger the download
+               // $('#download' + event.data.count).attr('disabled', false);
+
             } catch (e) {
                 console.log("Error:", e);
             }
